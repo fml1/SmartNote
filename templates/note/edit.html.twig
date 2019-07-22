@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>{{ title }}</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link" href="">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form name="note-edit__form" method="post">
+                    {% if form is defined %}
+                        {{ form_start(form) }}
+                        {{ form_label(form.attr_content) }}
+                        {{ form_errors(form.attr_content) }}
+                        {{ form_widget(form.attr_content) }}
+                        {{ form_help(form.attr_content) }}
+                        {{ form_end(form) }}
+                    {% endif %}
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>Просмотр</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link" href="">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                {% if form.vars.value.attrContent is defined %}
+                    {{ form.vars.value.attrContent|raw }}
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+{% form_theme form _self %}
+{% block textarea_widget %}
+    {% set type = type|default('text') %}
+    {{- block('form_widget_simple') -}}
+    <div class="note-edit__summernote">
+    {{ value|raw }}
+    </div>
+{% endblock %}
+
+{% block javascripts_footer %}
+<!-- SUMMERNOTE -->
+<script src="/js/plugins/summernote/summernote-bs4.js"></script>
+
+<script src="/js/block/note/edit.js"></script>
+<script>
+$(document).ready(function(){
+    $('.note-edit__summernote').summernote({
+        height: 200
+    });
+
+});
+</script>
+{% endblock %}

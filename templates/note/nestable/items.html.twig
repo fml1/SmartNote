@@ -1,0 +1,39 @@
+{% if items is defined and items is iterable %}
+{% set parent_id = 0 %}
+{% for item in items %}
+    <li class="dd-item dd3-item note__item" data-id="{{ item.id }}">
+        {% set parent_id = item.attr_parent_id %}
+        {% if parent_id > 0 %}
+        <button data-action="collapse" type="button" style="display: none;">Collapse</button>
+        <button data-action="expand" type="button" style="">Expand</button>
+        {% endif %}
+        <div class="dd-handle dd3-handle">&nbsp;</div>
+        <div class="dd3-content note__item-content">
+            <a
+               class="note__item-show"
+            >{% if item.title == '' %}-{% else %}{{ item.title }}{% endif %}</a>
+            <span class="note__item-menu d-none">
+                <a href="{{ path('note_new', {'parent_id': item.id } ) }}"
+                   target="_blank"
+                >
+                    <i class="fa fa-plus"></i>
+                </a>
+                <a href="{{ path('note_edit', {'id': item.id}) }}"
+                   target="_blank"
+                ><i class="fa fa-edit"></i></a>
+                <a href="#" class="note__item-remove-button"><i class="fa fa-remove"></i></a>
+            </span>
+        </div>
+
+        <ol class="dd-list">
+        </ol>
+    </li>
+{% endfor %}
+{% if parent_id > 0 %}
+<script>
+$(document).ready(function(){
+    $('.note__nestable').nestable();
+});
+</script>
+{% endif %}
+{% endif %}

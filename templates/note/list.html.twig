@@ -1,0 +1,184 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Заголовок{% endblock %}
+{% block stylesheets %}
+    <style>
+        .dd3-handle {
+            position: absolute;
+            margin: 0;
+            left: 0;
+            top: 0;
+            cursor: pointer;
+            width: 20px;
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 1px solid #aaa;
+            background: #ddd;
+            background: -webkit-linear-gradient(top, #ddd 0%, #bbb 100%);
+            background: -moz-linear-gradient(top, #ddd 0%, #bbb 100%);
+            background: linear-gradient(top, #ddd 0%, #bbb 100%);
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .dd3-handle:before {
+            content: '≡';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 3px;
+            width: 100%;
+            text-align: center;
+            text-indent: 0;
+            color: #fff;
+            font-size: 15px;
+            font-weight: normal;
+        }
+        .dd3-content {
+            display: block;
+            height: 20px;
+            margin: 3px 0;
+            padding: 3px 10px 5px 40px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            background: #fafafa;
+            background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
+            background: -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
+            background: linear-gradient(top, #fafafa 0%, #eee 100%);
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        .dd-item > button {
+            height: 10px;
+            margin: 3px 0;
+        }
+        .dd3-item > button {
+            margin-left: 20px;
+        }
+        .dd-item, .dd-empty, .dd-placeholder {
+            line-height: 12px;
+            font-size: 11px;
+        }
+        .dd-handle{
+            padding: 3px 10px;
+        }
+        .note__item-menu{
+            position: absolute;
+            right: 0;
+            padding-right: 5px;
+        }
+        .note__item a, .note__item a:visited{
+            color: #c4c4c4;
+        }
+        .note__item a:hover{
+            color: #676a6c;
+        }
+        .dd-list .dd-list {
+            padding-left: 12px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Список узлов</h5>
+                    <div class="ibox-tools">
+                        <a class="note__add-button"
+                            title="Добавиить заметку"
+                            href="{{ path('note_new', {'parent_id': 0}) }}"
+                        >
+                            <i class="fa fa-plus"></i>
+                        </a>
+                        <a class="collapse-link" href="">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" action="">
+                        <div class="form-group">
+                            <input name="search" class="form-control" placeholder="Найти" value="{% if
+                                app.request.request.has('search')
+                                and app.request.request.get('search') != ''
+                            %}{{ app.request.request.get('search') }}{% endif
+                            %}" />
+                        </div>
+                    </form>
+                    <div class="dd note__nestable">
+                        <ol class="dd-list note__items">
+                            {% include "note/nestable/items.html.twig" %}
+                        </ol>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Найдено заметок: {{ pagination.getTotalItemCount }}</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Заголовок</th>
+                                <th>Содержание</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if pagination.items is defined and pagination.items is iterable %}
+                                {% for item in pagination.items %}
+                                    <tr class="note-search__item-show" data-id="{{ item.id }}">
+                                        <td>
+                                            <div class="icheckbox_square-green checked" style="position: relative;">
+                                                <input type="checkbox" checked="" class="i-checks" name="input[]" style="position: absolute; opacity: 0;">
+                                                <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+                                            </div>
+                                            {{ item.id }}
+                                        </td>
+                                        <td>{{ item.title }}</td>
+                                        <td>{{ item.content | slice(0, 40) }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="navigation">
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-6 note__show-container">
+            {% include "note/show.html.twig" %}
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts_footer %}
+<!-- Nestable List -->
+<script src="/js/plugins/nestable/jquery.nestable.js"></script>
+
+<!-- SUMMERNOTE -->
+<script src="/js/plugins/summernote/summernote-bs4.js"></script>
+
+<script src="/js/block/note/list.js"></script>
+
+{% endblock %}

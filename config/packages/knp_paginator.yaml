@@ -1,0 +1,3 @@
+knp_paginator:
+    template:
+        pagination: '_pagination.html.twig'     # sliding pagination controls template
